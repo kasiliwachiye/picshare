@@ -1,9 +1,141 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, signInWithEmailAndPassword, signInWithGoogle } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [user, loading] = useAuthState(auth);
+  const navigate = useNavigate();
+
+  const signin = () => {
+    if (!email) alert("Please enter email");
+    if (!password) alert("Please enter password");
+    signInWithEmailAndPassword(email, password);
+  }
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (user) navigate("/dashboard");
+  }, [user, loading]);
+
   return (
-    <div>Login</div>
+    <div className='px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20'>
+      <div className="max-w-xl mb-10 md:mx-auto lg:max-w-2xl md:mb-12">
+        <div className='text-center'>
+          <h2 className='text-3xl leading-9 font-extrabold text-gray-900'>
+            Welcome back!
+          </h2>
+          <p className='mt-2 text-base leading-6 text-gray-500'>
+            Sign in to your account to continue.
+          </p>
+        </div>
+        <div className='mt-8'>
+            <input type='hidden' name='_csrf' value='undefined' />
+            <div className='grid grid-cols-1 gap-6'>
+              <div className='col-span-1'>
+                <label htmlFor='email' className='block text-sm font-medium leading-5 text-gray-700'>
+                  Email address
+                </label>
+                <div className='mt-1 rounded-md shadow-sm'>
+                  <input
+                    id='email'
+                    name='email'
+                    type='email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'
+                  />
+                </div>
+              </div>
+            </div>
+            <div className='grid grid-cols-1 gap-6'>
+              <div className='col-span-1'>
+                <label htmlFor='password' className='block text-sm font-medium leading-5 text-gray-700'>
+                  Password
+                </label>
+                <div className='mt-1 rounded-md shadow-sm'>
+                  <input
+                    id='password'
+                    name='password'
+                    type='password'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'
+                  />
+                </div>
+              </div>
+            </div>
+            <div className='mt-6 flex items-center justify-between'>            
+              <div className='text-sm leading-5'>
+                <Link
+                  to='/reset'
+                  className='font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150'
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+            </div>
+            <div className='mt-6'>
+              <button
+                onClick={signin}
+                type='submit'
+                className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out'
+              >
+                <span className='absolute left-0 inset-y-0 flex items-center pl-3'>
+                  <svg
+                    className='h-5 w-5 text-indigo-500 group-hover:text-indigo-400 transition ease-in-out duration-150'
+                    fill='currentColor'
+                    viewBox='0 0 20 20'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                </span>
+                Sign in
+              </button>
+              <button
+                onClick={signInWithGoogle}
+                type='submit'
+                className='mt-6 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition duration-150 ease-in-out'
+              >
+                <span className='absolute left-0 inset-y-0 flex items-center pl-3'>
+                  <svg
+                    className='h-5 w-5 text-red-500 group-hover:text-red-400 transition ease-in-out duration-150'
+                    fill='currentColor'
+                    viewBox='0 0 20 20'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                </span>
+                Sign in with Google
+              </button>
+            </div>
+        </div>
+        <div className='mt-6 text-center'>
+          <Link
+            to='/signup'
+            className='font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150'
+          >
+            Don't have an account? Sign up
+          </Link>          
+        </div>
+      </div>
+    </div>
+
   )
 }
 
-export default Login
+export default Login;

@@ -17,6 +17,8 @@ import {
   addDoc
 } from "firebase/firestore";
 
+import { getStorage } from "firebase/storage";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBQ-j04ZOPE-MKQCLQ2vedZs_NblvHN2cQ",
   authDomain: "picshare-372c6.firebaseapp.com",
@@ -91,6 +93,8 @@ const logout = () => {
   signOut(auth);
 };
 
+const storage = getStorage(app);
+
 export {
   auth,
   db,
@@ -98,5 +102,8 @@ export {
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   logout,
+  storage,
 };
